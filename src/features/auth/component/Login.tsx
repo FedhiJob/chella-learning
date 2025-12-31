@@ -120,7 +120,7 @@ export default function Login() {
           <Link to="/register">
             <button className="w-full btn-dark">Create New Account</button>
           </Link>
-        </div>
+        </div> 
 
      
         <p className="text-center text-gray-500 text-sm mt-6">By logging in, you agree to our Terms & Conditions</p>
