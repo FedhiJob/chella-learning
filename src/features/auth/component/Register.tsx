@@ -9,7 +9,7 @@ export default function Register() {
     const dispatch = useAppDispatch();
     const { user, loading, error } = useAppSelector((state: any) => state.auth);
 
-
+    
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
