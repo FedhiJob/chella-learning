@@ -10,6 +10,7 @@ const initialState = {
   token: localStorage.getItem('token')  || null,
 };
 
+
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (
@@ -22,7 +23,6 @@ export const loginUser = createAsyncThunk(
   if(response.data.accessToken){
     localStorage.setItem('token',response.data.accessToken)
     localStorage.setItem('referralCode',response.data.referralCode)
-
     localStorage.setItem('isAuthenticated','true')
   }
       return response.data; 
@@ -72,7 +72,9 @@ const authSlice = createSlice({
     logout(state) {
       state.isAuthenticated = false;
       state.user = null;
-     
+     localStorage.removeItem('token');
+     localStorage.removeItem('isAuthenticated');
+     localStorage.removeItem('referralCode');
     },
   },
   extraReducers: (builder) => {
