@@ -1,9 +1,7 @@
 import React from 'react';
-
-export default function TransactionsPage() {
+import Transfer from '../components/Transfer';
+export default function TransferPage() {
   return (
-    <>
-    This is Transactions Page   
-    </>
+    <Transfer />
   );
 }
