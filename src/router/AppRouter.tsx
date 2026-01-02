@@ -9,7 +9,8 @@ import DashboardHome from '../features/dashboard/pages/DashboardHome';
 import ReferralsPage from '../features/referrals/pages/ReferralsPage';
 import TasksPage from '../features/tasks/pages/TasksPage';
 import TransactionsPage from '../features/transactions/pages/TransactionsPage';
-import TransferPage from '../features/transfer/pages/TransfersPage';
+import TransferPage from '../features/transactions/components/Transfer';
+import ProfilePage from '../features/Profile/pages/ProfilePage';
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -31,6 +32,7 @@ export default function AppRouter() {
           <Route path='tasks' element={<TasksPage />} />
           <Route path='transactions' element={<TransactionsPage />} />
           <Route path='transfer' element={<TransferPage />} />
+          <Route path='profile' element={<ProfilePage />} />
         </Route>
 
 
