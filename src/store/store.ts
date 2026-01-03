@@ -5,14 +5,16 @@ import apiMiddleware from '../services/apiMiddleware';
 import referralReducer from  "../features/referrals/slice/referralSlice"
 import taskReducer from "../features/tasks/slice/taskSlice"
 import profileReducer from '../features/Profile/slice/profileSlice';
+import transactionReducer from '../features/transactions/slice/transactionSlice'
+
 export const makeStore = () => {
   return configureStore({
     reducer: {
      auth: authReducer,
    referral:referralReducer,
    task:taskReducer,
-   profile:profileReducer 
-
+   profile:profileReducer ,
+transaction: transactionReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(apiMiddleware),
