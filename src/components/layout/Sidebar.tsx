@@ -9,6 +9,8 @@ import {
   LogOut,
  
 } from "lucide-react"
+import { useAppDispatch } from "../../hooks/hooks"
+import { logout } from "../../features/auth/slice/authSlice"
 
 export default function Sidebar() {
   const location = useLocation()
@@ -21,7 +23,11 @@ export default function Sidebar() {
     { icon: Send, label: "Transfer", href: "/dashboard/transfer" },
     { icon: User, label: "Profile", href: "/dashboard/profile" },
   ]
+const dispatch = useAppDispatch();
 
+  const handleLogout=()=> { 
+dispatch(logout());
+  }
   return (
     <>
    
@@ -58,7 +64,7 @@ export default function Sidebar() {
 
       
         <div className="px-4 pb-6">
-          <button className="w-full px-4 py-3 bg-red-900/20 text-red-400 rounded-lg flex items-center gap-3 hover:bg-red-900/40 transition-colors">
+          <button onClick={handleLogout} className="w-full px-4 py-3 bg-red-900/20 text-red-400 rounded-lg flex items-center gap-3 hover:bg-red-900/40 transition-colors">
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
           </button>
