@@ -13,7 +13,7 @@ interface Profile{
 }
 
 const initialState = {
-  profile:  null,
+  profile:  null as Profile | null,
   userProfile: null as Profile | null,
      loading: false,
     error: null as string | null,
