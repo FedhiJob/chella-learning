@@ -14,6 +14,9 @@ export interface Transaction {
   receiverUsername:string;
 }
 
+interface RejectValue {
+    message: string;
+}
 
 const initialState = {
   transactions: [] as Transaction[],
@@ -22,30 +25,30 @@ const initialState = {
     transferLoading: false,
 }
 
-export const transfer = createAsyncThunk(
+export const transfer = createAsyncThunk<unknown, { amount: number; receicerUsername: string }, { rejectValue: RejectValue }>(
   'transaction/transfer',
   async (
-    userData: { amount: number; receicerUsername: string },
+    userData,
     { rejectWithValue }
   ) => {
     try {
       const response = await api.post('/transactions/transfer/', userData);
 
       return response.data; 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error)
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
       return rejectWithValue({
         message:
-          error.response?.data?.message ||
-          error.message ||
+          err.response?.data?.message ||
+          err.message ||
           'transfer failed',
-        status: error.response?.status,
       });
     }
   }
 );
 
-export const getMyTransactions = createAsyncThunk(
+export const getMyTransactions = createAsyncThunk<Transaction[], void, { rejectValue: RejectValue }>(
   'transaction/getMyTransactions',
   async (
     _,
@@ -55,15 +58,15 @@ export const getMyTransactions = createAsyncThunk(
       const response = await api.get('/transactions/my-history');
     console.log(response.data)
  
-      return response.data; 
-    } catch (error: any) {
+      return response.data as Transaction[]; 
+    } catch (error: unknown) {
       console.log(error)
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
       return rejectWithValue({
         message:
-          error.response?.data?.message ||
-          error.message ||
+          err.response?.data?.message ||
+          err.message ||
           'fetching failed',
-        status: error.response?.status,
       });
     }
   }
@@ -85,7 +88,7 @@ const transactionSlice=createSlice({
         })
         .addCase(getMyTransactions.rejected,(state,action)=>{
             state.loading = false;
-            state.error = action.payload?.message || 'Failed to fetch transactions';
+            state.error = action.payload?.message ?? 'Failed to fetch transactions';
         })
         .addCase(transfer.pending,(state)=>{
             state.transferLoading = true;
@@ -96,7 +99,7 @@ const transactionSlice=createSlice({
         })
         .addCase(transfer.rejected,(state,action)=>{
             state.transferLoading = false;
-            state.error = action.payload?.message || 'Transfer failed';
+            state.error = action.payload?.message ?? 'Transfer failed';
         });
 
 
