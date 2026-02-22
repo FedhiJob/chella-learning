@@ -1,6 +1,5 @@
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit"
 import api from "../../../services/api";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
 
 interface  Task {
@@ -8,14 +7,16 @@ interface  Task {
     title:string;
     rewardAmount:number;
     taskDate:string;
+    category?:string;
 }
 
-
-
+interface RejectValue {
+    message: string;
+}
 
 const initialState = {
   tasks: [] as Task[] ,
-  completedTasks: [] as any,
+  completedTasks: [] as Task[],
   error: null as string | null,
   loading: false,
     completeLoading:false,
@@ -23,7 +24,7 @@ const initialState = {
 }
 
 
-export const getTodaysTask = createAsyncThunk(
+export const getTodaysTask = createAsyncThunk<Task[], void, { rejectValue: RejectValue }>(
   'task/getTodaysTask',
   async (
     _,
@@ -33,21 +34,21 @@ export const getTodaysTask = createAsyncThunk(
       const response = await api.get('/tasks/get-today-tasks');
     console.log(response.data)
  
-      return response.data; 
-    } catch (error: any) {
+      return response.data as Task[]; 
+    } catch (error: unknown) {
       console.log(error)
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
       return rejectWithValue({
         message:
-          error.response?.data?.message ||
-          error.message ||
+          err.response?.data?.message ||
+          err.message ||
           'fetching failed',
-        status: error.response?.status,
       });
     }
   }
 );
 
-export const completeTask = createAsyncThunk(
+export const completeTask = createAsyncThunk<unknown, string, { rejectValue: RejectValue }>(
   'task/completeTask',
   async (
     taskId,
@@ -58,14 +59,14 @@ export const completeTask = createAsyncThunk(
     console.log(response.data)
  
       return response.data; 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error)
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
       return rejectWithValue({
         message:
-          error.response?.data?.message ||
-          error.message ||
+          err.response?.data?.message ||
+          err.message ||
           'fetching failed',
-        status: error.response?.status,
       });
     }
   }
@@ -73,7 +74,7 @@ export const completeTask = createAsyncThunk(
 
 
 
-export const getCompletedTasks = createAsyncThunk(
+export const getCompletedTasks = createAsyncThunk<Task[], void, { rejectValue: RejectValue }>(
   'task/getCompletedTasks',
   async (
     _,
@@ -83,15 +84,15 @@ export const getCompletedTasks = createAsyncThunk(
       const response = await api.get('/tasks/get-my-completed-tasks');
     console.log(response.data)
  
-      return response.data; 
-    } catch (error: any) {
+      return response.data as Task[]; 
+    } catch (error: unknown) {
       console.log(error)
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
       return rejectWithValue({
         message:
-          error.response?.data?.message ||
-          error.message ||
+          err.response?.data?.message ||
+          err.message ||
           'fetching failed',
-        status: error.response?.status,
       });
     }
   }
@@ -110,14 +111,14 @@ const taskSlice=createSlice({
                 state.loading = true;
                 state.error = null;
                 })
-                .addCase(getTodaysTask.fulfilled, (state, action:PayloadAction<Task[]>) => {
+                .addCase(getTodaysTask.fulfilled, (state, action) => {
                     state.loading = false;
-               state.tasks=action.payload
+               state.tasks=action.payload as Task[]
                     
                 })
-              .addCase(getTodaysTask.rejected, (state, action: PayloadAction<any>) => {
+              .addCase(getTodaysTask.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message || 'get tasks failed';
+                state.error = action.payload?.message || 'get tasks failed';
               })
 
 
@@ -125,27 +126,26 @@ const taskSlice=createSlice({
                 state.completeLoading = true;
                 state.error = null;
                 })
-                .addCase(completeTask.fulfilled, (state, action:PayloadAction<any>) => {
+                .addCase(completeTask.fulfilled, (state) => {
                     state.completeLoading = false;
-               
                     
                 })
-              .addCase(completeTask.rejected, (state, action: PayloadAction<any>) => {
+              .addCase(completeTask.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message || 'get tasks failed';
+                state.error = action.payload?.message || 'get tasks failed';
               })
                .addCase(getCompletedTasks.pending, (state) => {
                 state.completedTaskLoading = true;
                 state.error = null;
                 })
-                .addCase(getCompletedTasks.fulfilled, (state, action:PayloadAction<any>) => {
+                .addCase(getCompletedTasks.fulfilled, (state, action) => {
                     state.completedTaskLoading = false;
-                  state.completedTasks=action.payload;
+                  state.completedTasks=action.payload as Task[]
                     
                 })
-              .addCase(getCompletedTasks.rejected, (state, action: PayloadAction<any>) => {
+              .addCase(getCompletedTasks.rejected, (state, action) => {
                 state.completedTaskLoading = false;
-                state.error = action.payload.message || 'get tasks failed';
+                state.error = action.payload?.message || 'get tasks failed';
               });
     }
 })
