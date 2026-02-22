@@ -14,7 +14,11 @@ export interface Referral {
   referredUserUsername: string;
 }
 
-export const getMyReferrals = createAsyncThunk(
+interface RejectValue {
+    message: string;
+}
+
+export const getMyReferrals = createAsyncThunk<Referral[], void, { rejectValue: RejectValue }>(
   'referral/getMyReferrals',
   async (
     _,
@@ -24,15 +28,15 @@ export const getMyReferrals = createAsyncThunk(
       const response = await api.get('/referrals/my-referred-users');
     console.log(response.data)
  
-      return response.data; 
-    } catch (error: any) {
+      return response.data as Referral[]; 
+    } catch (error: unknown) {
       console.log(error)
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
       return rejectWithValue({
         message:
-          error.response?.data?.message ||
-          error.message ||
+          err.response?.data?.message ||
+          err.message ||
           'fetching failed',
-        status: error.response?.status,
       });
     }
   }
@@ -82,7 +86,7 @@ const referralSlice=createSlice({
         })
         .addCase(getMyReferrals.rejected,(state,action)=>{
             state.loading = false;
-            state.error = action.payload?.message || 'Failed to fetch referrals';
+            state.error = action.payload?.message ?? 'Failed to fetch referrals';
         });
       
     }
