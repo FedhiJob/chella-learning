@@ -43,7 +43,7 @@ export default function Header() {
                     </div>
 
                     <div>
-                        <span className='text-white font-semibold'>     {!loading && profile ? `${profile.fullName} ` : 'Loading...'}
+<span className='text-white font-semibold'>     {!loading && profile ? `${profile.fullname} ` : 'Loading...'}
 </span>
                     </div>
                 </div>
