@@ -10,6 +10,14 @@ import {
 } from "../slice/taskSlice";
 import type { RootState } from "../../../store/store";
 
+interface Task {
+    id:string;
+    title:string;
+    rewardAmount:number;
+    taskDate:string;
+    category?:string;
+}
+
 export default function TaskList() {
   const dispatch = useAppDispatch();
 
@@ -18,7 +26,7 @@ export default function TaskList() {
   );
 
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
-  const [completionAnimation, setCompletionAnimation] = useState<number | null>(
+  const [completionAnimation, setCompletionAnimation] = useState<string | null>(
     null
   );
 
@@ -30,20 +38,20 @@ export default function TaskList() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading tasks</div>;
 
-  const handleCompleteTask = (id: number) => {
+  const handleCompleteTask = (id: string) => {
     setCompletionAnimation(id);
     dispatch(completeTask(id));
     setTimeout(() => setCompletionAnimation(null), 300);
   };
 
  
-  const isTaskCompleted = (task: any) =>
+  const isTaskCompleted = (task: Task) =>
     completedTasks.some(
-      (completed) => completed.title === task.title
+      (completed: Task) => completed.title === task.title
     );
 
 
-  const filteredTasks = tasks.filter((task) => {
+  const filteredTasks = tasks.filter((task: Task) => {
     const completed = isTaskCompleted(task);
 
     if (filter === "completed") return completed;
@@ -80,7 +88,7 @@ export default function TaskList() {
           <p className="text-gray-400 text-sm mb-1">Earned Today</p>
           <p className="text-2xl font-bold text-[#FFD700]">
             {completedTasks.reduce(
-              (sum, task) => sum + task.rewardAmount,
+              (sum: number, task: Task) => sum + task.rewardAmount,
               0
             )}{" "}
             ETB
@@ -93,7 +101,7 @@ export default function TaskList() {
         {["all", "completed", "pending"].map((type) => (
           <button
             key={type}
-            onClick={() => setFilter(type as any)}
+            onClick={() => setFilter(type as "all" | "completed" | "pending")}
             className={`px-4 py-2 rounded-lg text-sm capitalize ${
               filter === type
                 ? "bg-[#FFD700] text-black"
@@ -107,14 +115,14 @@ export default function TaskList() {
 
     
       <div className="space-y-4">
-        {filteredTasks.map((task) => {
+        {filteredTasks.map((task: Task) => {
           const completed = isTaskCompleted(task);
 
           return (
             <div
               key={task.id}
               className={`bg-[#1A1A1A] border border-gray-800 rounded-xl p-6 transition-all ${
-                completionAnimation === Number(task.id)
+                completionAnimation === task.id
                   ? "scale-95 opacity-50"
                   : ""
               }`}
