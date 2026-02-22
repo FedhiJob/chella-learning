@@ -12,6 +12,11 @@ interface Profile{
     totalReferred:number;
 }
 
+interface RejectValue {
+    message: string;
+    status?: number;
+}
+
 const initialState = {
   profile:  null as Profile | null,
   userProfile: null as Profile | null,
@@ -20,7 +25,7 @@ const initialState = {
 
 }
 
-export const getMyProfile = createAsyncThunk(
+export const getMyProfile = createAsyncThunk<Profile, void, { rejectValue: RejectValue }>(
   'profile/getMyProfile',
   async (
     _,
@@ -30,15 +35,15 @@ export const getMyProfile = createAsyncThunk(
       const response = await api.get('/users/myprofile');
     console.log(response.data)
  
-      return response.data; 
-    } catch (error: any) {
+      return response.data as Profile; 
+    } catch (error: unknown) {
       console.log(error)
+      const err = error as { response?: { data?: { message?: string }; status?: number }; message?: string };
       return rejectWithValue({
         message:
-          error.response?.data?.message ||
-          error.message ||
+          err.response?.data?.message ||
+          err.message ||
           'fetching failed',
-        status: error.response?.status,
       });
     }
   }
@@ -64,7 +69,7 @@ const profileSlice=createSlice({
         })
         .addCase(getMyProfile.rejected,(state,action)=>{
             state.loading = false;
-            state.error = action.payload?.message || 'Failed to fetch profile';
+            state.error = action.payload?.message ?? 'Failed to fetch profile';
         });
       
       
