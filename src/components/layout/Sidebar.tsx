@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   CheckCircle2,
@@ -7,43 +7,47 @@ import {
   Send,
   User,
   LogOut,
- 
-} from "lucide-react"
-import { useAppDispatch } from "../../hooks/hooks"
-import { logout } from "../../features/auth/slice/authSlice"
+  Calendar,
+  Trophy,
+  Settings,
+  HelpCircle,
+} from "lucide-react";
+import { useAppDispatch } from "../../hooks/hooks";
+import { logout } from "../../features/auth/slice/authSlice";
 
 export default function Sidebar() {
-  const location = useLocation()
+  const location = useLocation();
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
     { icon: CheckCircle2, label: "Tasks", href: "/dashboard/tasks" },
+    { icon: Calendar, label: "Daily Check-in", href: "/dashboard/daily-checkin" },
     { icon: Users, label: "Referrals", href: "/dashboard/referrals" },
+    { icon: Trophy, label: "Leaderboard", href: "/dashboard/leaderboard" },
     { icon: ReceiptText, label: "Transactions", href: "/dashboard/transactions" },
     { icon: Send, label: "Transfer", href: "/dashboard/transfer" },
     { icon: User, label: "Profile", href: "/dashboard/profile" },
-  ]
-const dispatch = useAppDispatch();
+    { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+    { icon: HelpCircle, label: "Help", href: "/dashboard/help" },
+  ];
+  const dispatch = useAppDispatch();
 
-  const handleLogout=()=> { 
-dispatch(logout());
-  }
+  const handleLogout = () => {
+    dispatch(logout());
+  };
   return (
     <>
-   
       <aside className=" flex w-64 bg-gray-900 border-r border-gray-800 h-screen sticky top-0 flex-col">
-     
         <div className="p-6 border-b border-gray-800">
           <Link to="/dashboard" className="text-2xl font-bold font-montserrat">
             <span className="text-yellow-500">Chella</span>
           </Link>
         </div>
 
-       
-        <nav className="py-8 flex-1">
+        <nav className="py-8 flex-1 overflow-y-auto">
           {menuItems.map((item) => {
-            const Icon = item.icon
-            const isActive = location.pathname === item.href
+            const Icon = item.icon;
+            const isActive = location.pathname === item.href;
 
             return (
               <Link key={item.href} to={item.href}>
@@ -58,21 +62,21 @@ dispatch(logout());
                   <span className="font-medium">{item.label}</span>
                 </div>
               </Link>
-            )
+            );
           })}
         </nav>
 
-      
         <div className="px-4 pb-6">
-          <button onClick={handleLogout} className="w-full px-4 py-3 bg-red-900/20 text-red-400 rounded-lg flex items-center gap-3 hover:bg-red-900/40 transition-colors">
+          <button
+            onClick={handleLogout}
+            className="w-full px-4 py-3 bg-red-900/20 text-red-400 rounded-lg flex items-center gap-3 hover:bg-red-900/40 transition-colors"
+          >
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
           </button>
         </div>
       </aside>
-
-    
-     
     </>
-  )
+  );
 }
+
