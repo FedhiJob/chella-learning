@@ -11,6 +11,11 @@ import TasksPage from '../features/tasks/pages/TasksPage';
 import TransactionsPage from '../features/transactions/pages/TransactionsPage';
 import TransferPage from '../features/transactions/components/Transfer';
 import ProfilePage from '../features/Profile/pages/ProfilePage';
+import DailyCheckinPage from '../features/daily-checkin/pages/DailyCheckinPage';
+import LeaderboardPage from '../features/leaderboard/pages/LeaderboardPage';
+import SettingsPage from '../features/settings/pages/SettingsPage';
+import HelpPage from '../features/help/pages/HelpPage';
+
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -33,6 +38,10 @@ export default function AppRouter() {
           <Route path='transactions' element={<TransactionsPage />} />
           <Route path='transfer' element={<TransferPage />} />
           <Route path='profile' element={<ProfilePage />} />
+          <Route path='daily-checkin' element={<DailyCheckinPage />} />
+          <Route path='leaderboard' element={<LeaderboardPage />} />
+          <Route path='settings' element={<SettingsPage />} />
+          <Route path='help' element={<HelpPage />} />
         </Route>
 
 
