@@ -1,14 +1,14 @@
 import React,{useEffect} from 'react';
-import { BellIcon } from 'lucide-react';
 import { useAppDispatch,useAppSelector } from '../../../hooks/hooks';
 import { getMyProfile } from '../../Profile/slice/profileSlice';
+import NotificationDropdown from '../../notifications/components/NotificationDropdown';
 import type { RootState } from '../../../store/store';
 export default function Header() {
 
 
     
         const dispatch = useAppDispatch();
-        const { loading, error, profile } = useAppSelector((state: RootState) => state.profile);
+        const { loading, profile } = useAppSelector((state: RootState) => state.profile);
     
         useEffect(() => {
     
@@ -26,11 +26,11 @@ export default function Header() {
 
             <div className='gap-4 flex items-center'>
                 <div>
-                    <BellIcon size={24} className='text-gray-300 cursor-pointer' />
+                    <NotificationDropdown />
 
                 </div>
                 <div>
-                    <select name="money" id="">
+                    <select name="money" id="" className="bg-gray-800 text-white px-2 py-1 rounded border border-gray-700">
                         <option value="USD">USD</option>
                         <option value="ETB">ETB</option>
                         <option value="GBP">GBP</option>
@@ -52,3 +52,4 @@ export default function Header() {
         </div>
     );
 }
+
