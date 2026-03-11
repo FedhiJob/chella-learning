@@ -6,6 +6,10 @@ import referralReducer from  "../features/referrals/slice/referralSlice"
 import taskReducer from "../features/tasks/slice/taskSlice"
 import profileReducer from '../features/Profile/slice/profileSlice';
 import transactionReducer from '../features/transactions/slice/transactionSlice'
+import dashboardReducer from '../features/dashboard/slice/dashboardSlice';
+import notificationReducer from '../features/notifications/slice/notificationSlice';
+import dailyCheckinReducer from '../features/daily-checkin/slice/dailyCheckinSlice';
+import leaderboardReducer from '../features/leaderboard/slice/leaderboardSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -15,6 +19,10 @@ export const makeStore = () => {
    task:taskReducer,
    profile:profileReducer ,
 transaction: transactionReducer,
+dashboard: dashboardReducer,
+notification: notificationReducer,
+dailyCheckin: dailyCheckinReducer,
+leaderboard: leaderboardReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(apiMiddleware),
