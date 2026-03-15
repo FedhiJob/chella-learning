@@ -15,6 +15,7 @@ import DailyCheckinPage from '../features/daily-checkin/pages/DailyCheckinPage';
 import LeaderboardPage from '../features/leaderboard/pages/LeaderboardPage';
 import SettingsPage from '../features/settings/pages/SettingsPage';
 import HelpPage from '../features/help/pages/HelpPage';
+import AchievementsPage from '../features/achievements/pages/AchievementsPage';
 
 export default function AppRouter() {
   return (
@@ -41,6 +42,7 @@ export default function AppRouter() {
           <Route path='daily-checkin' element={<DailyCheckinPage />} />
           <Route path='leaderboard' element={<LeaderboardPage />} />
           <Route path='settings' element={<SettingsPage />} />
+          <Route path='achievements' element={<AchievementsPage />} />
           <Route path='help' element={<HelpPage />} />
         </Route>
 
