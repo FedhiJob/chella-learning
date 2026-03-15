@@ -10,6 +10,7 @@ import dashboardReducer from '../features/dashboard/slice/dashboardSlice';
 import notificationReducer from '../features/notifications/slice/notificationSlice';
 import dailyCheckinReducer from '../features/daily-checkin/slice/dailyCheckinSlice';
 import leaderboardReducer from '../features/leaderboard/slice/leaderboardSlice';
+import achievementsReducer from '../features/achievements/slice/achievementsSlice';
 
 export const makeStore = () => {
   return configureStore({
@@ -23,6 +24,7 @@ dashboard: dashboardReducer,
 notification: notificationReducer,
 dailyCheckin: dailyCheckinReducer,
 leaderboard: leaderboardReducer,
+achievements: achievementsReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(apiMiddleware),
