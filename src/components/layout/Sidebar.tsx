@@ -11,6 +11,7 @@ import {
   Trophy,
   Settings,
   HelpCircle,
+  Award,
 } from "lucide-react";
 import { useAppDispatch } from "../../hooks/hooks";
 import { logout } from "../../features/auth/slice/authSlice";
@@ -28,6 +29,7 @@ export default function Sidebar() {
     { icon: Send, label: "Transfer", href: "/dashboard/transfer" },
     { icon: User, label: "Profile", href: "/dashboard/profile" },
     { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+    { icon: Award, label: "Achievements", href: "/dashboard/achievements" },
     { icon: HelpCircle, label: "Help", href: "/dashboard/help" },
   ];
   const dispatch = useAppDispatch();
