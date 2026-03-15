@@ -5,6 +5,7 @@ import { getMyProfile } from "../../Profile/slice/profileSlice";
 import { getMyTransactions } from "../../transactions/slice/transactionSlice";
 import { getTodaysTask } from "../../tasks/slice/taskSlice";
 import { getMyReferrals } from "../../referrals/slice/referralSlice";
+import { getAchievements } from "../../achievements/slice/achievementsSlice";
 import {
   Wallet,
   Users,
@@ -16,6 +17,7 @@ import {
   Gift,
   Calendar,
   Trophy,
+  Award,
 } from "lucide-react";
 
 export default function DashboardHome() {
@@ -26,12 +28,14 @@ export default function DashboardHome() {
   const { transactions } = useAppSelector((state) => state.transaction);
   const { tasks } = useAppSelector((state) => state.task);
   const { referrals } = useAppSelector((state) => state.referral);
+  const { achievements } = useAppSelector((state) => state.achievements || { achievements: [] });
 
   useEffect(() => {
     dispatch(getMyProfile());
     dispatch(getMyTransactions());
     dispatch(getTodaysTask());
     dispatch(getMyReferrals());
+    dispatch(getAchievements());
   }, [dispatch]);
 
   const formatCurrency = (amount: number) => {
@@ -93,6 +97,13 @@ export default function DashboardHome() {
       href: "/dashboard/profile",
       color: "bg-purple-500",
       hoverColor: "hover:bg-purple-600",
+    },
+    {
+      icon: Award,
+      label: "Achievements",
+      href: "/dashboard/achievements",
+      color: "bg-indigo-500",
+      hoverColor: "hover:bg-indigo-600",
     },
   ];
 
@@ -188,6 +199,29 @@ export default function DashboardHome() {
               onClick={() => navigate("/dashboard/tasks")}
             >
               View tasks →
+            </span>
+          </div>
+        </div>
+
+        {/* Achievements Card */}
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-400 text-sm">Achievements Earned</p>
+              <p className="text-2xl font-bold text-white mt-1">
+                {achievements.filter(a => a.isEarned).length}
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center">
+              <Award className="text-indigo-500" size={24} />
+            </div>
+          </div>
+          <div className="mt-4 flex items-center text-gray-400 text-sm">
+            <span
+              className="cursor-pointer text-yellow-500 hover:text-yellow-400"
+              onClick={() => navigate("/dashboard/achievements")}
+            >
+              View achievements →
             </span>
           </div>
         </div>
