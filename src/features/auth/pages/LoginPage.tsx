@@ -1,9 +1,16 @@
-import React from 'react';
-import Login from '../component/Login';
+import { AuthShell } from "../../../components/ui/auth-shell";
+import Login from "../component/Login";
+
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
-    <Login />
-    </div>
+    <AuthShell
+      title="Welcome back"
+      description="Sign in to keep your balance, task progress, and referral activity in one place."
+      footerText="Need an account?"
+      footerLinkLabel="Create one now"
+      footerLinkTo="/register"
+    >
+      <Login />
+    </AuthShell>
   );
 }

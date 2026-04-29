@@ -85,8 +85,8 @@ export function AuthShell({
 
           <div className="mt-10 flex items-center gap-3 rounded-2xl border border-emerald-400/15 bg-emerald-400/8 px-4 py-3 text-sm text-emerald-100">
             <span className="inline-flex size-2 rounded-full bg-emerald-300" />
-            Responsive UI refresh in progress across dashboard, rewards, and
-            account flows.
+            One account flow, one reward dashboard, and a clearer daily rhythm
+            for members.
           </div>
         </section>
 
