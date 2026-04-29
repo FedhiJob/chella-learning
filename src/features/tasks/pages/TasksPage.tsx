@@ -1,13 +1,21 @@
-import React from 'react';
-import TaskList from '../component/TaskList';
+import { Link } from "react-router-dom";
+import { PageContainer, PageHeader } from "../../../components/ui/shell";
+import TaskList from "../component/TaskList";
+
 export default function TasksPage() {
   return (
-    <div className=" p-6 space-y-8">
-      <div>
-        <h1 className="text-4xl font-bold font-montserrat mb-2">Daily Tasks</h1>
-        <p className="text-gray-400">Complete tasks to earn rewards</p>
-      </div>
-    <TaskList />
-    </div>
+    <PageContainer>
+      <PageHeader
+        eyebrow="Daily reward queue"
+        title="Tasks"
+        description="Complete each action, keep the streak moving, and watch rewards stack up without losing context."
+        actions={
+          <Link to="/dashboard/daily-checkin" className="btn-dark">
+            Open daily check-in
+          </Link>
+        }
+      />
+      <TaskList />
+    </PageContainer>
   );
 }

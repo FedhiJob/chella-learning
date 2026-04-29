@@ -1,24 +1,74 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
-import { getMyProfile } from "../../Profile/slice/profileSlice";
-import { getMyTransactions } from "../../transactions/slice/transactionSlice";
-import { getTodaysTask } from "../../tasks/slice/taskSlice";
-import { getMyReferrals } from "../../referrals/slice/referralSlice";
-import { getAchievements } from "../../achievements/slice/achievementsSlice";
 import {
-  Wallet,
-  Users,
+  ArrowRight,
+  Award,
+  Calendar,
   CheckCircle,
   DollarSign,
-  ArrowRight,
-  TrendingUp,
-  Clock,
   Gift,
-  Calendar,
   Trophy,
-  Award,
+  Users,
+  Wallet,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import {
+  EmptyState,
+  PageContainer,
+  PageHeader,
+  SectionTitle,
+  StatCard,
+  Surface,
+} from "../../../components/ui/shell";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import {
+  formatBirr,
+  formatCompactNumber,
+  formatDateTime,
+} from "../../../utils/format";
+import { getMyProfile } from "../../Profile/slice/profileSlice";
+import { getAchievements } from "../../achievements/slice/achievementsSlice";
+import { getMyReferrals } from "../../referrals/slice/referralSlice";
+import { getTodaysTask } from "../../tasks/slice/taskSlice";
+import { getMyTransactions } from "../../transactions/slice/transactionSlice";
+
+const quickActions = [
+  {
+    icon: CheckCircle,
+    label: "Finish daily tasks",
+    href: "/dashboard/tasks",
+    tone: "from-emerald-300/22 to-emerald-500/10 text-emerald-100 ring-emerald-400/20",
+  },
+  {
+    icon: Calendar,
+    label: "Keep your streak",
+    href: "/dashboard/daily-checkin",
+    tone: "from-orange-300/22 to-orange-500/10 text-orange-100 ring-orange-400/20",
+  },
+  {
+    icon: Users,
+    label: "Share referrals",
+    href: "/dashboard/referrals",
+    tone: "from-sky-300/22 to-sky-500/10 text-sky-100 ring-sky-400/20",
+  },
+  {
+    icon: Trophy,
+    label: "Check the leaderboard",
+    href: "/dashboard/leaderboard",
+    tone: "from-violet-300/22 to-violet-500/10 text-violet-100 ring-violet-400/20",
+  },
+  {
+    icon: DollarSign,
+    label: "Send a transfer",
+    href: "/dashboard/transfer",
+    tone: "from-amber-300/22 to-amber-500/10 text-amber-100 ring-amber-400/20",
+  },
+  {
+    icon: Award,
+    label: "Open achievements",
+    href: "/dashboard/achievements",
+    tone: "from-cyan-300/22 to-cyan-500/10 text-cyan-100 ring-cyan-400/20",
+  },
+];
 
 export default function DashboardHome() {
   const navigate = useNavigate();
@@ -28,7 +78,9 @@ export default function DashboardHome() {
   const { transactions } = useAppSelector((state) => state.transaction);
   const { tasks } = useAppSelector((state) => state.task);
   const { referrals } = useAppSelector((state) => state.referral);
-  const { achievements } = useAppSelector((state) => state.achievements || { achievements: [] });
+  const { achievements } = useAppSelector((state) => state.achievements || {
+    achievements: [],
+  });
 
   useEffect(() => {
     dispatch(getMyProfile());
@@ -38,317 +90,307 @@ export default function DashboardHome() {
     dispatch(getAchievements());
   }, [dispatch]);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const quickActions = [
-    {
-      icon: CheckCircle,
-      label: "Complete Tasks",
-      href: "/dashboard/tasks",
-      color: "bg-green-500",
-      hoverColor: "hover:bg-green-600",
-    },
-    {
-      icon: Calendar,
-      label: "Daily Check-in",
-      href: "/dashboard/daily-checkin",
-      color: "bg-orange-500",
-      hoverColor: "hover:bg-orange-600",
-    },
-    {
-      icon: Users,
-      label: "View Referrals",
-      href: "/dashboard/referrals",
-      color: "bg-blue-500",
-      hoverColor: "hover:bg-blue-600",
-    },
-    {
-      icon: Trophy,
-      label: "Leaderboard",
-      href: "/dashboard/leaderboard",
-      color: "bg-purple-500",
-      hoverColor: "hover:bg-purple-600",
-    },
-    {
-      icon: DollarSign,
-      label: "Transfer Money",
-      href: "/dashboard/transfer",
-      color: "bg-yellow-500",
-      hoverColor: "hover:bg-yellow-600",
-    },
-    {
-      icon: Wallet,
-      label: "View Profile",
-      href: "/dashboard/profile",
-      color: "bg-purple-500",
-      hoverColor: "hover:bg-purple-600",
-    },
-    {
-      icon: Award,
-      label: "Achievements",
-      href: "/dashboard/achievements",
-      color: "bg-indigo-500",
-      hoverColor: "hover:bg-indigo-600",
-    },
-  ];
-
-  const recentTransactions = transactions.slice(0, 5);
+  const fullName = profile?.fullname ?? "there";
+  const firstName = fullName.split(" ")[0] ?? "there";
+  const earnedAchievements = achievements.filter((achievement) => achievement.isEarned);
+  const recentTransactions = transactions.slice(0, 4);
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Welcome Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">
-          Welcome back, {profile?.fullname || "User"}! 👋
-        </h1>
-        <p className="text-gray-400 mt-1">
-          Here's what's happening with your account today.
-        </p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Balance Card */}
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-400 text-sm">Available Balance</p>
-              <p className="text-2xl font-bold text-white mt-1">
-                {formatCurrency(profile?.amount || 0)}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center">
-              <Wallet className="text-yellow-500" size={24} />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center text-green-400 text-sm">
-            <TrendingUp size={16} className="mr-1" />
-            <span>Ready to use</span>
-          </div>
-        </div>
-
-        {/* Total Earned Card */}
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-400 text-sm">Total Earned</p>
-              <p className="text-2xl font-bold text-white mt-1">
-                {formatCurrency(profile?.totalEarned || 0)}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
-              <DollarSign className="text-green-500" size={24} />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center text-gray-400 text-sm">
-            <Clock size={16} className="mr-1" />
-            <span>All time earnings</span>
-          </div>
-        </div>
-
-        {/* Referrals Card */}
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-400 text-sm">Total Referrals</p>
-              <p className="text-2xl font-bold text-white mt-1">
-                {profile?.totalReferred || referrals.length || 0}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
-              <Users className="text-blue-500" size={24} />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center text-gray-400 text-sm">
-            <Gift size={16} className="mr-1" />
-            <span>People invited</span>
-          </div>
-        </div>
-
-        {/* Tasks Card */}
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-400 text-sm">Today's Tasks</p>
-              <p className="text-2xl font-bold text-white mt-1">
-                {tasks.length}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center">
-              <CheckCircle className="text-purple-500" size={24} />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center text-gray-400 text-sm">
-            <span
-              className="cursor-pointer text-yellow-500 hover:text-yellow-400"
-              onClick={() => navigate("/dashboard/tasks")}
-            >
-              View tasks →
-            </span>
-          </div>
-        </div>
-
-        {/* Achievements Card */}
-        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-400 text-sm">Achievements Earned</p>
-              <p className="text-2xl font-bold text-white mt-1">
-                {achievements.filter(a => a.isEarned).length}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center">
-              <Award className="text-indigo-500" size={24} />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center text-gray-400 text-sm">
-            <span
-              className="cursor-pointer text-yellow-500 hover:text-yellow-400"
-              onClick={() => navigate("/dashboard/achievements")}
-            >
-              View achievements →
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <h2 className="text-xl font-semibold text-white mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {quickActions.map((action) => {
-            const Icon = action.icon;
-            return (
-              <button
-                key={action.href}
-                onClick={() => navigate(action.href)}
-                className={`${action.color} ${action.hoverColor} p-4 rounded-xl flex flex-col items-center justify-center transition-all transform hover:scale-105 group`}
-              >
-                <Icon size={28} className="text-white mb-2" />
-                <span className="text-white font-medium text-sm">
-                  {action.label}
-                </span>
-                <ArrowRight
-                  size={16}
-                  className="text-white/70 mt-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                />
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Recent Transactions */}
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-white">
-            Recent Transactions
-          </h2>
+    <PageContainer>
+      <PageHeader
+        eyebrow="Rewards command center"
+        title={`Welcome back, ${firstName}`}
+        description="Track balance, referrals, streaks, and the next best action without bouncing across disconnected screens."
+        actions={
           <button
-            onClick={() => navigate("/dashboard/transactions")}
-            className="text-yellow-500 hover:text-yellow-400 text-sm flex items-center"
+            type="button"
+            onClick={() => navigate("/dashboard/tasks")}
+            className="btn-gold"
           >
-            View All <ArrowRight size={16} className="ml-1" />
+            Go to today's tasks
+            <ArrowRight className="size-4" />
           </button>
-        </div>
+        }
+      />
 
-        {recentTransactions.length > 0 ? (
-          <div className="space-y-3">
-            {recentTransactions.map((tx) => (
-              <div
-                key={tx.id}
-                className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg"
-              >
-                <div className="flex items-center gap-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <StatCard
+          icon={Wallet}
+          label="Available balance"
+          value={formatBirr(profile?.amount ?? 0)}
+          description="Ready to transfer or compound through daily rewards."
+          accent="gold"
+        />
+        <StatCard
+          icon={DollarSign}
+          label="Total earned"
+          value={formatBirr(profile?.totalEarned ?? 0)}
+          description="All-time rewards across tasks, referrals, and bonuses."
+          accent="green"
+        />
+        <StatCard
+          icon={Users}
+          label="Referrals"
+          value={formatCompactNumber(profile?.totalReferred ?? referrals.length)}
+          description="People you've brought into the Chella network."
+          accent="blue"
+        />
+        <StatCard
+          icon={CheckCircle}
+          label="Today's tasks"
+          value={tasks.length}
+          description="Actions waiting for completion right now."
+          accent="violet"
+        />
+        <StatCard
+          icon={Award}
+          label="Achievements"
+          value={earnedAchievements.length}
+          description="Milestones unlocked through consistent activity."
+          accent="rose"
+        />
+      </div>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+        <Surface>
+          <SectionTitle
+            title="Quick actions"
+            description="Move directly into the next high-value part of your day."
+          />
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {quickActions.map((action) => {
+              const Icon = action.icon;
+
+              return (
+                <button
+                  key={action.href}
+                  type="button"
+                  onClick={() => navigate(action.href)}
+                  className="group rounded-[24px] border border-white/8 bg-[linear-gradient(145deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-5 text-left transition-transform hover:-translate-y-1"
+                >
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      tx.senderUsername === profile?.username
-                        ? "bg-red-500/20 text-red-400"
-                        : "bg-green-500/20 text-green-400"
-                    }`}
+                    className={`inline-flex size-12 items-center justify-center rounded-2xl bg-[linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] ring-1 ${action.tone}`}
                   >
-                    {tx.senderUsername === profile?.username ? (
-                      <ArrowRight size={20} />
-                    ) : (
-                      <ArrowRight size={20} className="rotate-180" />
-                    )}
+                    <Icon className="size-5" />
                   </div>
-                  <div>
-                    <p className="text-white font-medium">
-                      {tx.senderUsername === profile?.username
-                        ? `Sent to ${tx.receiverUsername}`
-                        : `Received from ${tx.senderUsername}`}
-                    </p>
-                    <p className="text-gray-400 text-sm">{tx.description}</p>
+                  <p className="mt-4 text-base font-semibold text-white">
+                    {action.label}
+                  </p>
+                  <div className="mt-4 flex items-center text-sm text-slate-400 transition-colors group-hover:text-white">
+                    Open now
+                    <ArrowRight className="ml-2 size-4" />
                   </div>
-                </div>
-                <div className="text-right">
-                  <p
-                    className={`font-semibold ${
-                      tx.senderUsername === profile?.username
-                        ? "text-red-400"
-                        : "text-green-400"
-                    }`}
-                  >
-                    {tx.senderUsername === profile?.username ? "-" : "+"}
-                    {formatCurrency(tx.amount)}
-                  </p>
-                  <p className="text-gray-400 text-sm">
-                    {formatDate(tx.createdAt)}
-                  </p>
-                </div>
-              </div>
-            ))}
+                </button>
+              );
+            })}
           </div>
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-gray-400">No recent transactions</p>
+        </Surface>
+
+        <Surface>
+          <SectionTitle
+            title="Momentum snapshot"
+            description="A calmer read on where to focus next."
+          />
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+              <p className="eyebrow">Next up</p>
+              <h3 className="mt-4 text-2xl font-semibold text-white">
+                {tasks.length > 0 ? `${tasks.length} tasks ready` : "No pending tasks"}
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                {tasks.length > 0
+                  ? "Knock these out first to keep your reward flow moving."
+                  : "You've cleared today's task queue. Check referrals or streaks next."}
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard/tasks")}
+                className="mt-5 text-sm font-medium text-amber-200 transition-colors hover:text-amber-100"
+              >
+                Open task list
+              </button>
+            </div>
+
+            <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+              <p className="eyebrow">Referral loop</p>
+              <h3 className="mt-4 text-2xl font-semibold text-white">
+                {profile?.referralCode ?? "Share your code"}
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                Every new member keeps the earning loop warm. Make the code easy
+                to copy, share, and remember.
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard/referrals")}
+                className="mt-5 text-sm font-medium text-cyan-200 transition-colors hover:text-cyan-100"
+              >
+                View referral tools
+              </button>
+            </div>
+
+            <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5 sm:col-span-2">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="eyebrow">Earned signals</p>
+                  <h3 className="mt-4 text-2xl font-semibold text-white">
+                    {earnedAchievements.length} achievements unlocked
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-400">
+                    Pair milestones with referrals and streak activity to keep
+                    the dashboard feeling alive.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate("/dashboard/achievements")}
+                  className="btn-dark"
+                >
+                  Review achievements
+                </button>
+              </div>
+            </div>
+          </div>
+        </Surface>
+      </div>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <Surface>
+          <SectionTitle
+            title="Recent transactions"
+            description="The latest money movement across your account."
+            action={
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard/transactions")}
+                className="text-sm font-medium text-amber-200 transition-colors hover:text-amber-100"
+              >
+                View all
+              </button>
+            }
+          />
+
+          {recentTransactions.length > 0 ? (
+            <div className="space-y-3">
+              {recentTransactions.map((tx) => {
+                const isOutgoing = tx.senderUsername === profile?.username;
+
+                return (
+                  <div
+                    key={tx.id}
+                    className="flex flex-col gap-4 rounded-[22px] border border-white/8 bg-white/[0.03] px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`flex size-11 items-center justify-center rounded-2xl ${
+                          isOutgoing
+                            ? "bg-rose-400/12 text-rose-200"
+                            : "bg-emerald-400/12 text-emerald-200"
+                        }`}
+                      >
+                        <ArrowRight
+                          className={`size-4 ${isOutgoing ? "" : "rotate-180"}`}
+                        />
+                      </div>
+                      <div>
+                        <p className="font-medium text-white">
+                          {isOutgoing
+                            ? `Sent to ${tx.receiverUsername}`
+                            : `Received from ${tx.senderUsername}`}
+                        </p>
+                        <p className="text-sm text-slate-400">
+                          {tx.description || "Reward transfer"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="text-left sm:text-right">
+                      <p
+                        className={`font-semibold ${
+                          isOutgoing ? "text-rose-200" : "text-emerald-200"
+                        }`}
+                      >
+                        {isOutgoing ? "-" : "+"}
+                        {formatBirr(tx.amount)}
+                      </p>
+                      <p className="text-sm text-slate-500">
+                        {formatDateTime(tx.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <EmptyState
+              icon={Wallet}
+              title="No recent transactions yet"
+              description="As soon as rewards or transfers hit your account, they will appear here with cleaner status cues."
+              action={
+                <button
+                  type="button"
+                  onClick={() => navigate("/dashboard/transfer")}
+                  className="btn-dark"
+                >
+                  Make your first transfer
+                </button>
+              }
+            />
+          )}
+        </Surface>
+
+        <Surface>
+          <SectionTitle
+            title="Invite and earn"
+            description="The referral loop should be visible, simple, and rewarding."
+          />
+
+          <div className="rounded-[28px] border border-amber-300/18 bg-[linear-gradient(145deg,rgba(245,191,82,0.16),rgba(255,255,255,0.02))] p-5">
+            <div className="flex size-12 items-center justify-center rounded-2xl bg-slate-950/35 text-amber-100">
+              <Gift className="size-5" />
+            </div>
+            <h3 className="mt-4 text-2xl font-semibold text-white">
+              Invite friends and earn more
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-slate-200">
+              Share your referral code, track who joined, and see the reward loop
+              without digging through the dashboard.
+            </p>
+
+            <div className="mt-5 grid gap-3">
+              <div className="rounded-[22px] border border-white/10 bg-slate-950/45 px-4 py-3">
+                <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
+                  Referral code
+                </p>
+                <p className="mt-2 font-mono text-lg text-white">
+                  {profile?.referralCode ?? "No code yet"}
+                </p>
+              </div>
+              <div className="rounded-[22px] border border-white/10 bg-slate-950/45 px-4 py-3">
+                <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
+                  Potential next reward
+                </p>
+                <p className="mt-2 text-white">
+                  Each successful invite adds
+                  <span className="ml-2 font-semibold text-amber-100">
+                    {formatBirr(20)}
+                  </span>
+                </p>
+              </div>
+            </div>
+
             <button
-              onClick={() => navigate("/dashboard/transfer")}
-              className="mt-2 text-yellow-500 hover:text-yellow-400"
+              type="button"
+              onClick={() => navigate("/dashboard/referrals")}
+              className="btn-gold mt-5 w-full"
             >
-              Make your first transfer →
+              Open referral workspace
             </button>
           </div>
-        )}
+        </Surface>
       </div>
-
-      {/* Referral Code Banner */}
-      <div className="bg-linear-to-r from-yellow-500/20 to-yellow-600/20 rounded-xl p-6 border border-yellow-500/30">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h3 className="text-xl font-semibold text-white">
-              Invite Friends & Earn Rewards! 🎁
-            </h3>
-            <p className="text-gray-300 mt-1">
-              Share your referral code and earn when your friends join
-            </p>
-          </div>
-          <button
-            onClick={() => navigate("/dashboard/referrals")}
-            className="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-3 rounded-lg font-semibold transition-colors flex items-center"
-          >
-            <Users size={20} className="mr-2" />
-            View Referral Code
-          </button>
-        </div>
-      </div>
-    </div>
+    </PageContainer>
   );
 }
-

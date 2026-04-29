@@ -1,7 +1,8 @@
 import React from 'react'
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { getMyProfile } from '../slice/profileSlice';
-import { Achievement, getAchievements } from '../../achievements/slice/achievementsSlice';
+import { getAchievements } from '../../achievements/slice/achievementsSlice';
+import type { Achievement } from '../../achievements/slice/achievementsSlice';
 import { Award } from 'lucide-react';
 
 export default function Profile() {
@@ -30,7 +31,7 @@ export default function Profile() {
           <div className="text-white grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <p className="mb-3"><span className="font-semibold">Username:</span> {profile.username}</p>
-              <p className="mb-3"><span className="font-semibold">Full Name:</span> {profile.fullName}</p>
+              <p className="mb-3"><span className="font-semibold">Full Name:</span> {profile.fullname}</p>
               <p className="mb-3"><span className="font-semibold">Referral Code:</span> <span className="bg-yellow-500/20 px-3 py-1 rounded-full font-mono">{profile.referralCode}</span></p>    
               <p className="mb-3"><span className="font-semibold">Referred By:</span> {profile.refferedBy || 'N/A'}</p>
             </div>

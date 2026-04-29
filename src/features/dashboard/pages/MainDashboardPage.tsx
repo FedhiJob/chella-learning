@@ -1,16 +1,22 @@
-import React from 'react';
-import Sidebar from '../../../components/layout/Sidebar';
-import { Outlet } from 'react-router-dom';
-import Header from '../components/Header';
+import { Outlet } from "react-router-dom";
+import Sidebar from "../../../components/layout/Sidebar";
+import Header from "../components/Header";
+
 export default function MainDashboardPage() {
   return (
-    <div className='bg-black w-full min-h-screen flex text-white'>
-      <Sidebar />
+    <div className="relative min-h-screen bg-[#05070d] text-white">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(245,191,82,0.1),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.08),transparent_22%)]" />
 
-       <main className="flex-1 ">
-        <Header />
-       <Outlet />
-      </main>
+      <div className="relative flex min-h-screen">
+        <Sidebar />
+
+        <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+          <Header />
+          <main className="min-w-0 flex-1 pb-10">
+            <Outlet />
+          </main>
+        </div>
+      </div>
     </div>
   );
 }

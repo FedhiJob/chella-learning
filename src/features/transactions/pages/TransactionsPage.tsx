@@ -1,20 +1,20 @@
-import Transfer from '../components/Transfer';
-import React from 'react';
-
-import TransactionList from '../components/TransactionList';
+import { PageContainer, PageHeader } from "../../../components/ui/shell";
+import TransactionList from "../components/TransactionList";
+import Transfer from "../components/Transfer";
 
 export default function TransactionsPage() {
   return (
-    <div className="p-6 space-y-8">
-      <div>
-        <h1 className="text-4xl font-bold font-montserrat mb-2">Transactions</h1>
-        <p className="text-gray-400">View your transaction history and transfer funds</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        eyebrow="Movement and payouts"
+        title="Transactions"
+        description="Review transfer history and send funds without leaving the same workspace."
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">
         <TransactionList />
         <Transfer />
       </div>
-    </div>
+    </PageContainer>
   );
 }

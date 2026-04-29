@@ -1,16 +1,19 @@
-import React from 'react';
-import Referrals from '../components/Referrals';
-import ReferralCodeContainer from '../components/ReferralCodeContainer';
+import { PageContainer, PageHeader } from "../../../components/ui/shell";
+import ReferralCodeContainer from "../components/ReferralCodeContainer";
+import Referrals from "../components/Referrals";
+
 export default function ReferralsPage() {
   return (
-    <div className="space-y-8 p-6">
-       <div>
-        <h1 className="text-4xl font-bold font-montserrat mb-2">Refer Friends</h1>
-        <p className="text-gray-400">Earn 20 ETB for every friend who joins Chella</p>
+    <PageContainer>
+      <PageHeader
+        eyebrow="Growth loop"
+        title="Referrals"
+        description="Share your code, track who joined, and keep referral earnings front and center."
+      />
+      <div className="space-y-8">
+        <ReferralCodeContainer />
+        <Referrals />
       </div>
-      <ReferralCodeContainer/>
-      
-    <Referrals />
-    </div>
+    </PageContainer>
   );
 }

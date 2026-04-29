@@ -1,84 +1,84 @@
+import { LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard,
-  CheckCircle2,
-  Users,
-  ReceiptText,
-  Send,
-  User,
-  LogOut,
-  Calendar,
-  Trophy,
-  Settings,
-  HelpCircle,
-  Award,
-} from "lucide-react";
-import { useAppDispatch } from "../../hooks/hooks";
 import { logout } from "../../features/auth/slice/authSlice";
+import { useAppDispatch } from "../../hooks/hooks";
+import { cn } from "../../utils/cn";
+import { BrandMark } from "../ui/brand";
+import { dashboardNav } from "./dashboardNav";
 
 export default function Sidebar() {
   const location = useLocation();
-
-  const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: CheckCircle2, label: "Tasks", href: "/dashboard/tasks" },
-    { icon: Calendar, label: "Daily Check-in", href: "/dashboard/daily-checkin" },
-    { icon: Users, label: "Referrals", href: "/dashboard/referrals" },
-    { icon: Trophy, label: "Leaderboard", href: "/dashboard/leaderboard" },
-    { icon: ReceiptText, label: "Transactions", href: "/dashboard/transactions" },
-    { icon: Send, label: "Transfer", href: "/dashboard/transfer" },
-    { icon: User, label: "Profile", href: "/dashboard/profile" },
-    { icon: Settings, label: "Settings", href: "/dashboard/settings" },
-    { icon: Award, label: "Achievements", href: "/dashboard/achievements" },
-    { icon: HelpCircle, label: "Help", href: "/dashboard/help" },
-  ];
   const dispatch = useAppDispatch();
 
   const handleLogout = () => {
     dispatch(logout());
   };
+
+  const isActiveRoute = (href: string) =>
+    href === "/dashboard"
+      ? location.pathname === href
+      : location.pathname.startsWith(href);
+
   return (
-    <>
-      <aside className=" flex w-64 bg-gray-900 border-r border-gray-800 h-screen sticky top-0 flex-col">
-        <div className="p-6 border-b border-gray-800">
-          <Link to="/dashboard" className="text-2xl font-bold font-montserrat">
-            <span className="text-yellow-500">Chella</span>
-          </Link>
-        </div>
+    <aside className="sticky top-0 hidden h-screen w-[300px] shrink-0 flex-col border-r border-white/8 bg-slate-950/70 px-5 pb-6 pt-5 backdrop-blur lg:flex">
+      <div className="rounded-[28px] border border-white/8 bg-white/[0.03] p-5 shadow-[0_24px_90px_rgba(2,6,23,0.32)]">
+        <BrandMark detail="Reward operations" />
+        <p className="mt-4 text-sm leading-6 text-slate-400">
+          Keep daily tasks, transfers, referrals, and progress signals inside
+          one calmer workspace.
+        </p>
+      </div>
 
-        <nav className="py-8 flex-1 overflow-y-auto">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.href;
+      <nav className="mt-6 flex-1 space-y-2 overflow-y-auto pr-1">
+        {dashboardNav.map((item) => {
+          const Icon = item.icon;
+          const isActive = isActiveRoute(item.href);
 
-            return (
-              <Link key={item.href} to={item.href}>
-                <div
-                  className={`mx-4 px-4 py-3 rounded-lg flex items-center gap-3 transition-all cursor-pointer ${
-                    isActive
-                      ? "bg-yellow-500 text-black"
-                      : "text-gray-400 hover:text-yellow-500 hover:bg-gray-800"
-                  }`}
-                >
-                  <Icon size={20} />
-                  <span className="font-medium">{item.label}</span>
-                </div>
-              </Link>
-            );
-          })}
-        </nav>
+          return (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={cn(
+                "group flex items-start gap-3 rounded-[22px] border px-4 py-3 transition-all",
+                isActive
+                  ? "border-amber-300/30 bg-[linear-gradient(135deg,rgba(245,191,82,0.22),rgba(255,255,255,0.02))] text-white shadow-[0_18px_50px_rgba(245,158,11,0.16)]"
+                  : "border-transparent bg-transparent text-slate-400 hover:border-white/8 hover:bg-white/[0.03] hover:text-white",
+              )}
+            >
+              <div
+                className={cn(
+                  "mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-2xl transition-colors",
+                  isActive
+                    ? "bg-slate-950/45 text-amber-100"
+                    : "bg-white/[0.04] text-slate-400 group-hover:text-amber-100",
+                )}
+              >
+                <Icon className="size-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-medium">{item.label}</p>
+                <p className="mt-1 text-sm leading-5 text-slate-500 group-hover:text-slate-300">
+                  {item.description}
+                </p>
+              </div>
+            </Link>
+          );
+        })}
+      </nav>
 
-        <div className="px-4 pb-6">
-          <button
-            onClick={handleLogout}
-            className="w-full px-4 py-3 bg-red-900/20 text-red-400 rounded-lg flex items-center gap-3 hover:bg-red-900/40 transition-colors"
-          >
-            <LogOut size={20} />
-            <span className="font-medium">Logout</span>
-          </button>
-        </div>
-      </aside>
-    </>
+      <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-4 text-sm text-slate-400">
+        Stay on top of balance changes and daily streaks without bouncing
+        between disconnected pages.
+      </div>
+
+      <button
+        onClick={handleLogout}
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-full border border-red-400/18 bg-red-500/10 px-4 py-3 font-medium text-red-200 transition-colors hover:bg-red-500/18"
+      >
+        <LogOut size={18} />
+        Logout
+      </button>
+    </aside>
   );
 }
 
